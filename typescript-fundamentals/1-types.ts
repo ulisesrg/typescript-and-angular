@@ -27,8 +27,7 @@ function vanillaJavascriptSum(num1, num2) {
 }
 
 let anyValue: any = 10;
-anyValue = 'Hi'; 
-
+anyValue = 'Hi';
 
 // Type Keyword
 
