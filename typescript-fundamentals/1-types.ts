@@ -31,6 +31,6 @@ anyValue = 'Hi';
 
 // Type Keyword
 
-type dni = number;
-let dniNumber: dni = 123;
-let dniNumber2: dni = 456;
+type ssn = number;
+let ssnNumber: ssn = 123;
+let ssnNumber2: ssn = 456;
