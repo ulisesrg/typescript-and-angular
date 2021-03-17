@@ -1,4 +1,4 @@
-type Ssn = number;
+type Ssn = string;
 
 interface Person {
   height?: number;
@@ -14,5 +14,5 @@ const person: Person = {
   age: 29,
   name: 'John',
   lastName: 'Smith',
-  ssn: 123456789
+  ssn: '123456789'
 }
