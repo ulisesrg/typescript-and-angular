@@ -4,7 +4,7 @@ function init(target) {
     lastName = 'Smith';
 
     sayMyName() {
-      return `${this.nombre} ${this.apellido}`;
+      return `${this.name} ${this.lastName}`;
     }
   };
 }

@@ -1,5 +1,5 @@
 function log(target, key) {
-  console.log(key + 'it has been called');
+  console.log(key + ' has been called');
 }
 // target -> Robot
 // key -> sayMyName
@@ -21,5 +21,6 @@ const robot: Robot = new Robot('Alan');
 robot.sayMyName();
 /* 
 it will print:
-'Alan' 'sayMyName se ha llamado'
+'sayMyName has been called'
+'Alan'
 */
