@@ -7,11 +7,15 @@ import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from 'src/environments/environment';
 import { TeamTableComponent } from './team-table/team-table.component';
+import { PlayerTableComponent } from './player-table/player-table.component';
+// import { PlayerDialogComponent } from './player-dialog/player-dialog.component';
 
 @NgModule({
-  declarations: [
+  declarations: [ 
     AppComponent,
-    TeamTableComponent
+    TeamTableComponent,
+    PlayerTableComponent,
+    // PlayerDialogComponent
   ],
   imports: [
     BrowserModule,
