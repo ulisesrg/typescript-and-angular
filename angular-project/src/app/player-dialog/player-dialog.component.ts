@@ -21,8 +21,7 @@ export class PlayerDialogComponent implements OnInit {
     // key: Countries[key],
 
     // Other alternatives:
-    key: key.indexOf,
-    // key: (Countries as any)[key],
+    key: (Countries as any)[key],
     // key: Countries as any[typeof key],
   }));
 
@@ -30,7 +29,7 @@ export class PlayerDialogComponent implements OnInit {
     .slice(Object.keys(SquadNumber).length / 2)
     .map((key) => ({
       label: key,
-      key: key.indexOf,
+      key: (SquadNumber as any)[key],
     }));
 
   private newPlayer(playerFormValue: any): void {
