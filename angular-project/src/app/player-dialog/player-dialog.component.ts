@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { take } from 'rxjs/operators';
 import { Countries } from '../interfaces/countries.enum';
@@ -13,8 +13,9 @@ import { TeamService } from '../services/team.service';
   styleUrls: ['./player-dialog.component.scss'],
 })
 export class PlayerDialogComponent implements OnInit {
+  @Input() player?: Player | null;
+  @Output() closaDialog: EventEmitter<boolean> = new EventEmitter();
   private team!: Team;
-  public player?: Player;
   public countries = Object.keys(Countries).map((key) => ({
     label: key,
     // tslint marks it as incorrect:
@@ -34,7 +35,7 @@ export class PlayerDialogComponent implements OnInit {
 
   private newPlayer(playerFormValue: any): void {
     const key = this.playerService.addPlayer(playerFormValue).key;
-    const playerFormValueKeyWithKey = {
+    const playerFormValueWithKey = {
       ...playerFormValue,
       key,
     };
@@ -42,7 +43,7 @@ export class PlayerDialogComponent implements OnInit {
       ...this.team,
       players: [
         ...(this.team.players ? this.team.players : []),
-        playerFormValueKeyWithKey,
+        playerFormValueWithKey,
       ],
     };
     this.teamService.editTeam(formattedTeam);
@@ -64,13 +65,54 @@ export class PlayerDialogComponent implements OnInit {
       });
   }
 
+  private editPlayer(playerFormValue: Player): void {
+    const playerFormValueWithKey = {
+      ...playerFormValue,
+      $key: this.player?.$key,
+    };
+
+    const playerFormValueWithFormattedKey = {
+      ...playerFormValue,
+      key: this.player?.$key,
+    };
+
+    delete playerFormValueWithFormattedKey.$key;
+
+    const modifiedPlayers = this.team.players
+      ? this.team.players.map((player: any) => {
+          return player.key === this.player?.$key
+            ? playerFormValueWithFormattedKey
+            : player;
+        })
+      : this.team.players;
+
+    const formattedTeam = {
+      ...this.team,
+      players: [
+        ...(modifiedPlayers
+          ? modifiedPlayers
+          : [playerFormValueWithFormattedKey]),
+      ],
+    };
+    this.playerService.editPlayer(playerFormValueWithKey);
+    this.teamService.editTeam(formattedTeam);
+  }
+
   onSubmit(playerForm: NgForm): void {
     const playerFormValue = { ...playerForm.value };
     if (playerForm.valid) {
       playerFormValue.leftFooted =
-        playerFormValue.leftFooted === '' ? false : playerFormValue.leftFooted;
+        !playerFormValue.leftFooted ? false : true;
     }
-    this.newPlayer(playerFormValue);
+    if (this.player) {
+      this.editPlayer(playerFormValue);
+    } else {
+      this.newPlayer(playerFormValue);
+    }
     window.location.replace('#');
+  }
+
+  onClose(): void {
+    this.closaDialog.emit(true);
   }
 }
