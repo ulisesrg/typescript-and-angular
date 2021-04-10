@@ -1,0 +1,11 @@
+{
+  "targets": {
+    "typescript-angular-7071c": {
+      "hosting": {
+        "angular-project": [
+          "typescript-angular-7071c"
+        ]
+      }
+    }
+  }
+}
