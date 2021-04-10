@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
+import { Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Countries } from '../interfaces/countries.enum';
 import { Player, SquadNumber } from '../interfaces/player.model';
@@ -16,6 +17,7 @@ export class PlayerDialogComponent implements OnInit {
   @Input() player?: Player | null;
   @Output() closaDialog: EventEmitter<boolean> = new EventEmitter();
   private team!: Team;
+  public teams$ = new Observable<Team[]>();
   public countries = Object.keys(Countries).map((key) => ({
     label: key,
     // tslint marks it as incorrect:
@@ -39,14 +41,24 @@ export class PlayerDialogComponent implements OnInit {
       ...playerFormValue,
       key,
     };
-    const formattedTeam = {
-      ...this.team,
-      players: [
-        ...(this.team.players ? this.team.players : []),
-        playerFormValueWithKey,
-      ],
-    };
-    this.teamService.editTeam(formattedTeam);
+
+    // team needs to be updated from firebase
+    this.teamService
+      .getTeams()
+      .pipe(take(1))
+      .subscribe((teams) => {
+        this.team = teams[0];
+
+        const formattedTeam = {
+          ...this.team,
+          players: [
+            ...(this.team.players ? this.team.players : []),
+            playerFormValueWithKey,
+          ],
+        };
+
+        this.teamService.editTeam(formattedTeam);
+      });
   }
 
   constructor(
@@ -101,8 +113,7 @@ export class PlayerDialogComponent implements OnInit {
   onSubmit(playerForm: NgForm): void {
     const playerFormValue = { ...playerForm.value };
     if (playerForm.valid) {
-      playerFormValue.leftFooted =
-        !playerFormValue.leftFooted ? false : true;
+      playerFormValue.leftFooted = !playerFormValue.leftFooted ? false : true;
     }
     if (this.player) {
       this.editPlayer(playerFormValue);
